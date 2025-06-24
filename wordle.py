@@ -47,6 +47,7 @@ def wordle():
     must_be = [0 for i in range(5)]
     not_exist = set()
     might_be = {}
+    guessed = set()
 
     valid_words = None
     valid_words_tmp = []
@@ -63,6 +64,7 @@ def wordle():
         
         
         guess = get_guess(valid_words)
+        guessed.add(guess)
         guess_result = str(input("Enter the result (0 for no, 1 for somewhere else, 2 for yes): "))
 
         for i in range(5):
@@ -86,6 +88,11 @@ def wordle():
 
         for word in words:
             valid = True
+
+            # if already guessed
+            if(word in guessed):
+                continue
+            
             for i in range(5):
                 # if must doesn't match
                 if(must_be[i] != 0 and word[i] != must_be[i]):
