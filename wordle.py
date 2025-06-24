@@ -55,12 +55,12 @@ def wordle():
         valid_words = valid_words_tmp
         valid_words_tmp = []
 
-        '''
+        
         print(f"valid_words: {valid_words}")
         print(f"must_be: {must_be}")
         print(f"might_be: {might_be}")
         print(f"not_exist: {not_exist}")
-        '''
+        
         
         guess = get_guess(valid_words)
         guess_result = str(input("Enter the result (0 for no, 1 for somewhere else, 2 for yes): "))
@@ -98,17 +98,19 @@ def wordle():
                     break
 
                 # if might be letter already tried in position
-                if(word[i] in might_be and i in might_be[word[i]]):
-                    valid = False
-                    break
+                if(word[i] in might_be):
+                    if(i in might_be[word[i]]):
+                        valid = False
+                        break
 
             # if might_be letter not in word
             if(valid):
-                for letter in might_be:
-                    if letter not in word:
-                        continue
-
-                valid_words_tmp.append((word, get_freqs(word)))
+                for i in might_be:
+                    if(i not in word):
+                        valid = False
+                        break
+                if(valid):
+                    valid_words_tmp.append((word, get_freqs(word)))
             
 
 if __name__ == "__main__":
@@ -116,5 +118,7 @@ if __name__ == "__main__":
         try:
             wordle()
         except:
-            print("restart----------------------------------------------------------------")
+            print("----------------------------------------------------------------")
+            print("---------------------------restart------------------------------")
+            print("----------------------------------------------------------------")
                 
