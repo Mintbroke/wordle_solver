@@ -69,7 +69,7 @@ def wordle():
 
         for i in range(5):
             # does not exist
-            if(guess_result[i] == '0' and guess[i] not in must_be):
+            if(guess_result[i] == '0' and guess[i] not in must_be and guess[i] not in might_be):
                 not_exist.add(guess[i])
 
             # exists somewhere else
@@ -78,6 +78,8 @@ def wordle():
                     might_be[guess[i]].append(i)
                 else:
                     might_be[guess[i]] = [i]
+                if(guess[i] in not_exist):
+                    not_exist.remove(guess[i])
 
             # must be
             elif(guess_result[i] == '2'):
