@@ -20,23 +20,46 @@ def get_freqs(word: str) -> int:
         freq += freqs[i][word[i]]
     return freq
 
+def get_uniques(word: str) -> int:
+    unique = 0
+    seen = set()
+    for i in range(5):
+        if(word[i] not in seen):
+            unique += 1
+            seen.add(word[i])
+    return unique
+
 def get_guess(valid = None) -> str:
     best_word = ""
     best_score = 0
+    most_unique = 0
     if(not valid):
         #print("not valid")
         for word in words:
             score = get_freqs(word)
-            if(score > best_score):
-                best_score = score
+            unique = get_uniques(word)
+            if(unique > most_unique):
                 best_word = word
+                best_score = score
+                most_unique = unique
+            elif(unique == most_unique):
+                if(score > best_score):
+                    best_score = score
+                    best_word = word
                 
     else:
         #print("valid")
         for word in valid:
-            if(word[1] > best_score):
+            unique = get_uniques(word[0])
+            if(unique > most_unique):
                 best_word = word[0]
                 best_score = word[1]
+                most_unique = unique
+            elif(unique == most_unique):
+                if(word[1] > best_score):
+                    best_word = word[0]
+                    best_score = word[1]
+                    most_unique = unique
 
     print(f"Best guess: {best_word}")
     return best_word
@@ -47,6 +70,7 @@ def wordle():
     must_be = [0 for i in range(5)]
     not_exist = set()
     might_be = {}
+    eliminated = [set() for i in range(5)]
     guessed = set()
 
     valid_words = None
@@ -86,6 +110,9 @@ def wordle():
                 must_be[i] = guess[i]
                 if(guess[i] in not_exist):
                     not_exist.remove(guess[i])
+                    for index in range(len(guess)):
+                        if(index != i and guess[i] == guess[index]):
+                            eliminated[index].add(guess[i])
 
 
         for word in words:
@@ -101,6 +128,10 @@ def wordle():
                     valid = False
                     break
 
+                if(word[i] in eliminated[i]):
+                    valid = False
+                    break
+
                 # if contains not_exist letters
                 if(word[i] in not_exist):
                     valid = False
@@ -111,6 +142,11 @@ def wordle():
                     if(i in might_be[word[i]]):
                         valid = False
                         break
+
+                # if eliminated
+                if(word[i] in eliminated[i]):
+                    valid = False
+                    break
 
             # if might_be letter not in word
             if(valid):
